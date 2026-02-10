@@ -21,14 +21,11 @@ RUN uv venv && \
     . .venv/bin/activate && \
     uv pip install -e ".[dev]"
 
-# Expose port
-EXPOSE 8811
+# Expose ports (8000 for SSE/STREAMABLE, 8811 for OpenAPI)
+EXPOSE 8000 8811
 
 # Set environment variables
 ENV PROXMOX_MCP_CONFIG="/app/proxmox-config/config.json"
-ENV API_HOST="0.0.0.0"
-ENV API_PORT="8811"
 
-# Startup command
-CMD ["mcpo", "--host", "0.0.0.0", "--port", "8811", "--", \
-     "/bin/bash", "-c", "cd /app && source .venv/bin/activate && python -m proxmox_mcp.server"]
+# Startup command - runs MCP server directly with SSE/STREAMABLE
+CMD ["/bin/bash", "-c", "source .venv/bin/activate && python -m proxmox_mcp.server"]
